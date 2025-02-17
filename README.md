@@ -18,7 +18,21 @@ RUN apk update && apk add --no-cache bash python && rm -rf /var/cache/apk*
 CMD ["/bin/sh"]
 ```
 
-# Docker Compose
+### Docker Compose
+```
+services:
+  web:
+    build: .
+    container_name: express-app
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    command: ["npm", "start"]
+    environment:
+      - NODE_ENV=development
+```
 ```
 # Start-Stop Services
 $ docker-compose up
