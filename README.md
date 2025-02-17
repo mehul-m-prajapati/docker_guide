@@ -20,7 +20,7 @@ CMD ["/bin/sh"]
 
 # Docker Compose
 ```
-# Start-Stop the services
+# Start-Stop Services
 $ docker-compose up
 $ docker-compose down
 
