@@ -23,13 +23,20 @@ $ docker start mongo
 
 ### Dockerfile
 ```
-FROM node:12.18.0-alpine
-LABEL author="Mehul" \
-  role="developer"
-WORKDIR /home/node
-COPY testfile /home/node/
-RUN apk update && apk add --no-cache bash python && rm -rf /var/cache/apk*
-CMD ["/bin/sh"]
+FROM node:18
+
+# Set working directory
+WORKDIR /home/app
+
+# Copy package files and install dependencies first (for better caching)
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+COPY .env .
+
+# Set the default command
+CMD ["node", "app.js"]
 ```
 
 ```
@@ -40,7 +47,35 @@ docker run --rm -it myimage:1.0
 docker inspect myimage:1.0
 ```
 
-### Docker Compose
+### Docker Compose for Mongodb
+```
+services:
+  mongodb: # container name
+    image: mongo
+    ports:
+      - 30000:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=test
+      - MONGO_INITDB_ROOT_PASSWORD=test
+    volumes:
+      - mongo-data:/data/db
+  mongo-express: # container name
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=test
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=test
+      - ME_CONFIG_BASICAUTH_USERNAME=test
+      - ME_CONFIG_BASICAUTH_PASSWORD=test
+      - ME_CONFIG_MONGODB_SERVER=mongo
+
+volumes:
+  mongo-data:
+    driver: local
+```
+
+### Docker Compose for node app
 ```
 services:
   web:
@@ -55,6 +90,7 @@ services:
     environment:
       - NODE_ENV=development
 ```
+
 ```
 # Start-Stop Services
 $ docker-compose up
