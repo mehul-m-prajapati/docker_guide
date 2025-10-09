@@ -1,5 +1,12 @@
 ### Basics
 ```
+docker build -t myimage:1.0 .
+docker image ls
+docker image rm myimage:1.0
+docker run --rm -it myimage:1.0
+docker inspect myimage:1.0
+```
+```
 ## Pull image from docker hub
 $ docker pull mongo
 
@@ -37,14 +44,6 @@ COPY .env .
 
 # Set the default command
 CMD ["node", "app.js"]
-```
-
-```
-docker build -t myimage:1.0 .
-docker image ls
-docker image rm myimage:1.0
-docker run --rm -it myimage:1.0
-docker inspect myimage:1.0
 ```
 
 ### Docker Compose for Mongodb
